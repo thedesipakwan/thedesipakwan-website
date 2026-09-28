@@ -1,26 +1,371 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   THE DESI PAKWAN design tokens — "Paan, Kesariya, Pista, Mehndi, Sindoor"
+   Deep paan-leaf green base, molten kesariya-orange accents (jalebi in the
+   kadhai), pale pista light sections, burnt-sindoor CTAs. Deliberately NOT
+   the brown/gold/cream look every snack brand uses.
+   --------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paan-900: #0c2b1e;
+  --paan-700: #1b4a35;
+  --kesariya-500: #FF8A3C;
+  --kesariya-300: #FFB884;
+  --pista-100: #f4f8ea;
+  --pista-200: #e3edd2;
+  --mehndi-600: #2e7d57;
+  --mehndi-300: #a4d4b4;
+  --sindoor-600: #B03A0F;
+  --kesar-400: #f29b38;
+
+  /* Illustration-only colours: food stays food-coloured regardless of theme */
+  --wheat: #e9b949;
+  --wheat-light: #f7d98b;
+  --earth: #7a4a21;
+
+  --shadow-dark: 0 20px 60px rgba(6, 28, 19, 0.4);
+  --shadow-light: 0 12px 40px rgba(6, 28, 19, 0.12);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paan-900: var(--paan-900);
+  --color-paan-700: var(--paan-700);
+  --color-kesariya-500: var(--kesariya-500);
+  --color-kesariya-300: var(--kesariya-300);
+  --color-pista-100: var(--pista-100);
+  --color-pista-200: var(--pista-200);
+  --color-mehndi-600: var(--mehndi-600);
+  --color-mehndi-300: var(--mehndi-300);
+  --color-sindoor-600: var(--sindoor-600);
+  --color-kesar-400: var(--kesar-400);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-manrope);
+  --font-devanagari: var(--font-devanagari);
+
+  --shadow-warm-dark: 0 20px 60px rgba(6, 28, 19, 0.35);
+  --shadow-warm: 0 12px 40px rgba(6, 28, 19, 0.12);
+
+  --radius-card: 28px;
+  --radius-input: 12px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto;
+  /* keep the scrollbar's space reserved so locking scroll (cart drawer,
+     mobile menu) doesn't widen the page and make it jump */
+  scrollbar-gutter: stable;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paan-900);
+  color: var(--pista-100);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--kesariya-500);
+  color: var(--paan-900);
+}
+
+/* Warm focus ring — never blue */
+:focus-visible {
+  outline: 3px solid var(--kesariya-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Display type helpers */
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-variation-settings: "SOFT" 80, "WONK" 1;
+  font-optical-sizing: auto;
+}
+
+.font-devanagari {
+  font-family: var(--font-devanagari), var(--font-manrope), sans-serif;
+}
+
+.font-hand {
+  font-family: var(--font-caveat), "Segoe Script", cursive;
+}
+
+/* Paper-grain noise overlay for light sections */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 1;
+}
+/* lift content above the noise, but leave absolutely-positioned layers alone */
+.grain > *:not(.absolute) {
+  position: relative;
+  z-index: 2;
+}
+
+/* Mould-pattern background tile (faint) */
+.mould-tile {
+  background-image: url("/images/svg/mould-pattern.svg");
+  background-size: 220px 220px;
+}
+
+/* Marquee keyframes */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 30s) linear infinite;
+  will-change: transform;
+}
+.marquee-hover-slow:hover .animate-marquee {
+  animation-duration: calc(var(--marquee-duration, 30s) * 2.5);
+}
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.animate-marquee-reverse {
+  animation: marquee-reverse var(--marquee-duration, 30s) linear infinite;
+  will-change: transform;
+}
+.marquee-paused:hover .animate-marquee,
+.marquee-paused:hover .animate-marquee-reverse {
+  animation-play-state: paused;
+}
+
+/* Gentle float for hero product */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(1.5deg);
+  }
+}
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+
+/* Breathing radial ghee glow */
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.12);
+  }
+}
+.animate-glow {
+  animation: glow-breathe 7s ease-in-out infinite;
+}
+
+/* Animated border: a kesariya light that travels around the box outline */
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes border-spin {
+  to {
+    --border-angle: 360deg;
+  }
+}
+.animated-border {
+  position: relative;
+}
+/* faint static ring so the box reads even without animation */
+.animated-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 138, 60, 0.18);
+  pointer-events: none;
+}
+/* the traveling light */
+.animated-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 0%,
+    rgba(255, 138, 60, 0.9) 10%,
+    #ffb884 16%,
+    rgba(255, 138, 60, 0.9) 22%,
+    transparent 32%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: border-spin 4.5s linear infinite;
+  pointer-events: none;
+}
+
+/* Slow diagonal drift for background pattern tiles */
+@keyframes pattern-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 220px 220px;
+  }
+}
+.animate-pattern-drift {
+  animation: pattern-drift 40s linear infinite;
+}
+
+/* Very slow rotation for background mandalas */
+@keyframes spin-very-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-very-slow {
+  animation: spin-very-slow 90s linear infinite;
+}
+.animate-spin-very-slow-reverse {
+  animation: spin-very-slow 70s linear infinite reverse;
+}
+
+/* Gentle drifting float for scattered motifs */
+@keyframes motif-drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(8deg);
+  }
+}
+.animate-motif-drift {
+  animation: motif-drift 7s ease-in-out infinite;
+}
+
+/* Chakli spinner */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 2.4s linear infinite;
+}
+
+/* Number roll on price change */
+@keyframes price-roll {
+  from {
+    transform: translateY(0.6em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-price-roll {
+  animation: price-roll 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Toast entrance */
+@keyframes toast-in {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-toast-in {
+  animation: toast-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Ghee-drop confetti */
+@keyframes ghee-drop-burst {
+  0% {
+    transform: translate(0, 0) scale(0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx, 0), var(--dy, -60px)) scale(1);
+    opacity: 0;
+  }
+}
+.animate-ghee-burst {
+  animation: ghee-drop-burst 0.9s ease-out forwards;
+}
+
+/* Reduced motion: kill decorative animation, keep short fades */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-reverse,
+  .animate-float,
+  .animate-glow,
+  .animate-spin-slow,
+  .animate-spin-very-slow,
+  .animate-spin-very-slow-reverse,
+  .animate-motif-drift,
+  .animate-pattern-drift {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide scrollbar on filter rows */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Lenis recommended styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
