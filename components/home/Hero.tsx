@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap, SplitText, useGSAP, prefersReducedMotion } from "@/lib/gsap";
 import { ButtonLink } from "@/components/ui/Button";
-import MagneticButton from "@/components/motion/MagneticButton";
 import Marquee from "./Marquee";
 import ChakliSpiral from "@/components/svg/ChakliSpiral";
 
@@ -26,18 +25,26 @@ export default function Hero() {
       gsap.fromTo(
         ".hero-bg",
         { scale: 1.08 },
-        { scale: 1, duration: 2.2, ease: "expo.out" }
+        { scale: 1, duration: 2.2, ease: "expo.out" },
       );
       // …and a gentle parallax drift as you scroll away (no zoom)
       gsap.to(".hero-bg", {
         yPercent: 8,
         ease: "none",
-        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
+        scrollTrigger: {
+          trigger: el,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
       });
 
       const headline = el.querySelector(".hero-headline");
       if (headline) {
-        const split = SplitText.create(headline, { type: "lines,chars", mask: "lines" });
+        const split = SplitText.create(headline, {
+          type: "lines,chars",
+          mask: "lines",
+        });
         gsap.from(split.chars, {
           yPercent: 115,
           rotation: 6,
@@ -59,17 +66,17 @@ export default function Hero() {
         delay: 0.8,
       });
     },
-    { scope: ref }
+    { scope: ref },
   );
 
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[115svh] flex-col justify-end overflow-hidden bg-paan-900 md:min-h-[100svh] lg:aspect-[2/1] lg:min-h-0"
+      className="relative flex min-h-[115svh] flex-col justify-end overflow-hidden bg-paan-900 wide:min-h-0"
     >
-      {/* background photo fills the hero edge to edge. Phones use a copy
-          rotated 90° (jar at the bottom, dark space at the top for the text). */}
-      <div className="absolute inset-0" aria-hidden>
+      {/* phones: a copy of the photo rotated 90° (jar at the bottom, dark space
+          at the top for the text) fills the whole hero */}
+      <div className="absolute inset-0 wide:hidden" aria-hidden>
         <div className="hero-bg absolute inset-0">
           <Image
             src="/images/hero-2-mobile.webp"
@@ -77,60 +84,72 @@ export default function Hero() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-bottom md:hidden"
-          />
-          <Image
-            src="/images/hero-2.webp"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="hidden object-cover object-center md:block"
+            className="object-cover object-bottom"
           />
         </div>
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1280px] flex-1 flex-col justify-end px-6 pb-[calc(60svh-50px)] pt-24 md:justify-center md:pb-8 md:pt-64">
-        <h1 className="hero-headline font-display max-w-4xl text-[clamp(48px,8.5vw,108px)] font-black leading-[0.95] tracking-[-0.02em] text-kesariya-500">
-          Ghar ka khasta,
-          <br />
-          ghar tak.
-        </h1>
-
-        <p className="hero-sub mt-6 max-w-xl text-[18px] leading-[1.55] text-pista-100/90 md:text-[20px]">
-          Handmade thekua & chakli from a Bihari kitchen. Desi ghee. No maida, no palm oil,
-          no preservatives. Shipped fresh across India.
-        </p>
-
-        {/* phones: two compact half-width buttons on one row */}
-        <div className="hero-ctas mt-8 flex items-center gap-3 md:gap-4">
-          <MagneticButton className="min-w-0 flex-1 md:flex-none">
-            <ButtonLink
-              href="/shop"
-              className="h-12! w-full whitespace-nowrap px-2! text-[clamp(13px,3.8vw,15px)]! md:h-14! md:w-auto md:px-8! md:text-[17px]!"
-            >
-              Shop the crunch
-            </ButtonLink>
-          </MagneticButton>
-          <MagneticButton className="min-w-0 flex-1 md:flex-none">
-            <ButtonLink
-              href="/about"
-              variant="secondary"
-              className="h-12! w-full whitespace-nowrap bg-paan-900/70 px-2! text-[clamp(13px,3.8vw,15px)]! backdrop-blur-sm md:h-14! md:w-auto md:bg-transparent md:px-8! md:text-[17px]! md:backdrop-blur-none"
-            >
-              How it&apos;s made
-            </ButtonLink>
-          </MagneticButton>
+      {/* laptops/desktops: the photo fills exactly one screen, pinned right so
+          narrower screens only lose the empty dark area on the left */}
+      <div className="relative flex flex-1 flex-col wide:min-h-[100svh]">
+        <div className="absolute inset-0 hidden wide:block" aria-hidden>
+          <div className="hero-bg absolute inset-0">
+            <Image
+              src="/images/hero-2.webp"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-right"
+            />
+          </div>
         </div>
 
-        <div className="hero-cue mt-12 hidden md:flex" aria-hidden>
-          <ChakliSpiral className="animate-spin-slow h-9 w-9 text-kesariya-500/60" strokeWidth={7} />
+        <div className="relative mx-auto flex w-full max-w-[1280px] flex-1 flex-col justify-end px-6 pb-[calc(60svh-50px)] pt-24 wide:justify-center wide:pb-8 wide:pt-[min(16rem,28svh)]">
+          <h1 className="hero-headline font-display max-w-4xl text-center wide:text-left text-[min(10.2vw,84px)] wide:text-[clamp(48px,min(8.5vw,13svh),108px)] font-black leading-[0.95] tracking-[-0.02em] text-kesariya-500">
+            Ghar ka <span className="text-3d text-paan-900">khasta</span>,
+            <br />
+            ghar tak.
+          </h1>
+
+          <p className="hero-sub mx-auto mt-6 max-w-xl text-center wide:mx-0 wide:text-left wide:lg:max-w-[min(36rem,34vw)] text-[18px] leading-[1.55] text-pista-100/90 wide:text-[20px]">
+            Handmade thekua & chakli from a Bihari kitchen. Desi ghee. No maida,
+            no palm oil, no preservatives. Shipped fresh across India.
+          </p>
+
+          {/* phones: two compact half-width buttons on one row */}
+          <div className="hero-ctas mt-8 flex w-full items-center gap-3 sm:mx-auto sm:max-w-md wide:mx-0 wide:max-w-none wide:gap-4">
+            <div className="min-w-0 flex-1 wide:flex-none">
+              <ButtonLink
+                href="/shop"
+                className="h-12! w-full whitespace-nowrap px-2! text-[clamp(13px,3.8vw,15px)]! wide:h-14! wide:w-auto wide:px-8! wide:text-[17px]!"
+              >
+                Shop the crunch
+              </ButtonLink>
+            </div>
+            <div className="min-w-0 flex-1 wide:flex-none">
+              <ButtonLink
+                href="/about"
+                variant="secondary"
+                className="h-12! w-full whitespace-nowrap bg-paan-900/70 px-2! text-[clamp(13px,3.8vw,15px)]! backdrop-blur-sm wide:h-14! wide:w-auto wide:bg-transparent wide:px-8! wide:text-[17px]! wide:backdrop-blur-none"
+              >
+                How it&apos;s made
+              </ButtonLink>
+            </div>
+          </div>
+
+          <div className="hero-cue mt-12 hidden wide:flex" aria-hidden>
+            <ChakliSpiral
+              className="animate-spin-slow h-9 w-9 text-kesariya-500/60"
+              strokeWidth={7}
+            />
+          </div>
         </div>
       </div>
 
       <Marquee
         duration={28}
-        slowOnHover
+        pauseOnHover
         className="relative border-t border-pista-100/5 py-4"
         ariaLabel="The Desi Pakwan highlights"
       >

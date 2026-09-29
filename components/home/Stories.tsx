@@ -10,8 +10,9 @@ import MagneticButton from "@/components/motion/MagneticButton";
 /**
  * STORIES — "Har ghar ki kahani". Four Polaroid-style moments of thekua and
  * chakli being shared. Desktop: the cards start as a stacked pile and slide
- * apart into a row as you scroll (pinned + scrubbed). Mobile: a snap-scroll
- * carousel. Emotional, not promotional — one CTA at the end.
+ * apart into a row as you scroll (pinned + scrubbed). Phones and tablets
+ * (below 1280px): a snap-scroll carousel — tablets show two cards with the
+ * third peeking in. Emotional, not promotional — one CTA at the end.
  */
 
 const ROTATIONS = [-4, 2, -2, 3];
@@ -47,7 +48,7 @@ export default function Stories() {
 
       const mm = gsap.matchMedia();
 
-      mm.add("(min-width: 768px)", () => {
+      mm.add("(min-width: 1280px)", () => {
         const desktop = el.querySelector<HTMLElement>(".stories-desktop");
         if (!desktop) return;
         const cards = gsap.utils.toArray<HTMLElement>(".story-card", desktop);
@@ -86,7 +87,7 @@ export default function Stories() {
       />
 
       {/* ---------- desktop: fixed scattered cards ---------- */}
-      <div className="stories-desktop relative hidden py-24 md:block md:py-32">
+      <div className="stories-desktop relative hidden py-32 xl:block">
         <div className="mx-auto w-full max-w-[1280px] px-6">
           <SplitTextReveal
             as="h2"
@@ -108,17 +109,17 @@ export default function Stories() {
         </div>
       </div>
 
-      {/* ---------- mobile: snap carousel ---------- */}
-      <div className="relative py-20 md:hidden">
+      {/* ---------- phones + tablets: snap carousel ---------- */}
+      <div className="relative py-20 md:py-28 xl:hidden">
         <div className="px-6">
-          <h2 className="font-display text-[34px] font-black leading-[1.05] text-kesariya-500">
+          <h2 className="font-display text-[34px] font-black leading-[1.05] text-kesariya-500 md:text-[clamp(34px,4.5vw,48px)]">
             Har ghar mein ek kahani hai.
           </h2>
-          <p className="mt-2 text-[16px] text-pista-100/70">Four moments, one dabba.</p>
+          <p className="mt-2 text-[16px] text-pista-100/70 md:text-[17px]">Four moments, one dabba.</p>
         </div>
-        <div className="no-scrollbar mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto px-[10vw] pb-6">
+        <div className="no-scrollbar mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto px-[10vw] pb-6 pt-4 md:mt-10 md:scroll-px-6 md:gap-8 md:px-6">
           {stories.map((s, i) => (
-            <div key={s.image} className="snap-center" style={{ rotate: `${ROTATIONS[i]}deg` }}>
+            <div key={s.image} className="snap-center md:snap-start" style={{ rotate: `${ROTATIONS[i]}deg` }}>
               <StoryCard story={s} plain />
             </div>
           ))}
@@ -160,8 +161,8 @@ function StoryCard({
 }) {
   return (
     <div
-      className={`story-card relative w-[240px] shrink-0 rounded-[8px] bg-[#FFF3DC] p-5 pb-3 shadow-[0_24px_60px_rgba(42,20,8,0.45)] lg:w-[268px] ${
-        plain ? "w-[76vw] max-w-[300px]" : ""
+      className={`story-card relative w-[240px] shrink-0 rounded-[8px] bg-[#FFF3DC] p-5 pb-3 shadow-[0_24px_60px_rgba(42,20,8,0.45)] ${
+        plain ? "w-[76vw] max-w-[300px] md:w-[36vw] md:max-w-[380px]" : "lg:w-[268px]"
       }`}
     >
       {/* washi tape */}
@@ -182,7 +183,7 @@ function StoryCard({
           src={story.image}
           alt={story.lines[0]}
           fill
-          sizes="(max-width: 768px) 76vw, 268px"
+          sizes="(max-width: 768px) 76vw, (max-width: 1280px) 36vw, 268px"
           className="object-cover"
         />
       </div>

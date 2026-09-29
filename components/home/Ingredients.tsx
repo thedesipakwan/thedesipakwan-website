@@ -69,7 +69,7 @@ export default function Ingredients() {
             copy="Milled slow in small batches so the bran and its nutty flavour stay in — the same coarse, unbleached atta Bihari kitchens have always trusted for thekua."
             image="/images/feature/atta.webp"
             alt="Stone-ground whole wheat atta flour with wheat stalks and a wooden scoop"
-            offset="md:ml-0"
+            offset="xl:ml-0"
           />
           <Row
             word="Gud"
@@ -78,7 +78,7 @@ export default function Ingredients() {
             copy="Unrefined gud straight from the kolhu — iron and minerals intact, and that deep caramel colour no white sugar can fake."
             image="/images/feature/gur.webp"
             alt="Blocks of pure sugarcane jaggery (gud) with sugarcane and a clay pot"
-            offset="md:ml-[6%]"
+            offset="xl:ml-[6%]"
             reverse
           />
           <Row
@@ -88,7 +88,7 @@ export default function Ingredients() {
             copy="The only fat that touches our kadhai. Ghee-fried thekua stays khasta for weeks without preservatives — that aroma is the ghee talking."
             image="/images/feature/ghee.webp"
             alt="Golden desi cow ghee in a brass bowl"
-            offset="md:ml-0"
+            offset="xl:ml-0"
           />
         </div>
       </div>
@@ -118,12 +118,12 @@ function Row({
 }) {
   return (
     <div
-      className={`ing-row flex flex-col items-start gap-6 sm:items-center md:gap-28 ${
+      className={`ing-row flex flex-col items-start gap-6 sm:items-center sm:gap-8 lg:gap-14 xl:gap-28 ${
         reverse ? "sm:flex-row-reverse" : "sm:flex-row"
       } ${offset}`}
     >
       {/* landscape photo (3:2), clean rounded corners */}
-      <div className="relative aspect-[3/2] w-full shrink-0 overflow-hidden rounded-[28px] sm:w-80 md:w-[420px] lg:w-[500px]">
+      <div className="relative aspect-[3/2] w-full shrink-0 overflow-hidden rounded-[28px] sm:w-[42%] xl:w-[500px]">
         <Image
           src={image}
           alt={alt}
@@ -133,7 +133,7 @@ function Row({
         />
       </div>
       <div
-        className="animated-border w-full max-w-2xl flex-1 rounded-[20px] bg-paan-700/25 px-9 py-6 text-left"
+        className="animated-border w-full max-w-2xl flex-1 rounded-[20px] bg-paan-700/25 px-7 py-6 text-left lg:px-9"
       >
         <h3 className="font-display text-[clamp(34px,4vw,52px)] font-black leading-none text-kesariya-500">
           {word}

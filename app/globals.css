@@ -27,6 +27,11 @@
   --shadow-light: 0 12px 40px rgba(6, 28, 19, 0.12);
 }
 
+/* "wide" = a landscape screen at least tablet-width (laptops, landscape
+   tablets). Portrait tablets fall back to the phone layout where it matters
+   (e.g. the hero, whose wide photo can't fit a tall screen). */
+@custom-variant wide (@media (min-width: 768px) and (orientation: landscape));
+
 @theme inline {
   --color-paan-900: var(--paan-900);
   --color-paan-700: var(--paan-700);
@@ -132,9 +137,6 @@ body {
   animation: marquee var(--marquee-duration, 30s) linear infinite;
   will-change: transform;
 }
-.marquee-hover-slow:hover .animate-marquee {
-  animation-duration: calc(var(--marquee-duration, 30s) * 2.5);
-}
 @keyframes marquee-reverse {
   from {
     transform: translateX(-50%);
@@ -146,10 +148,6 @@ body {
 .animate-marquee-reverse {
   animation: marquee-reverse var(--marquee-duration, 30s) linear infinite;
   will-change: transform;
-}
-.marquee-paused:hover .animate-marquee,
-.marquee-paused:hover .animate-marquee-reverse {
-  animation-play-state: paused;
 }
 
 /* Gentle float for hero product */
@@ -368,4 +366,39 @@ html.lenis body {
 }
 .lenis.lenis-stopped {
   overflow: hidden;
+}
+
+/* Hero "khasta": an orange outline all round each letter (a ring of
+   shadows, painted on top) that continues down into a solid extruded side,
+   shading from kesariya to deep sindoor, so the word reads as a raised 3D
+   block, plus a soft drop shadow underneath. */
+.text-3d {
+  text-shadow:
+    0.050em 0.000em 0 var(--kesariya-500),
+    0.046em 0.019em 0 var(--kesariya-500),
+    0.035em 0.035em 0 var(--kesariya-500),
+    0.019em 0.046em 0 var(--kesariya-500),
+    0.000em 0.050em 0 var(--kesariya-500),
+    -0.019em 0.046em 0 var(--kesariya-500),
+    -0.035em 0.035em 0 var(--kesariya-500),
+    -0.046em 0.019em 0 var(--kesariya-500),
+    -0.050em 0.000em 0 var(--kesariya-500),
+    -0.046em -0.019em 0 var(--kesariya-500),
+    -0.035em -0.035em 0 var(--kesariya-500),
+    -0.019em -0.046em 0 var(--kesariya-500),
+    -0.000em -0.050em 0 var(--kesariya-500),
+    0.019em -0.046em 0 var(--kesariya-500),
+    0.035em -0.035em 0 var(--kesariya-500),
+    0.046em -0.019em 0 var(--kesariya-500),
+    0.011em 0.037em 0 #e8702a,
+    0.013em 0.044em 0 #dd6826,
+    0.015em 0.051em 0 #d26023,
+    0.017em 0.058em 0 #c7581f,
+    0.019em 0.065em 0 #bc501b,
+    0.022em 0.072em 0 #b04918,
+    0.024em 0.079em 0 #a54114,
+    0.026em 0.086em 0 #9a3910,
+    0.028em 0.093em 0 #8f310d,
+    0.030em 0.100em 0 #842909,
+    0.05em 0.16em 0.12em rgb(0 0 0 / 0.5);
 }

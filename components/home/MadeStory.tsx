@@ -65,10 +65,12 @@ export default function MadeStory() {
         const q = gsap.utils.selector(desktop);
         const scenes = q(".made-scene");
         const vtitles = q(".made-vtitle");
+        const caps = q(".made-cap"); // tablet captions under the photo
         const dots = q(".made-dot");
 
         gsap.set(scenes.slice(1), { autoAlpha: 0 });
         gsap.set(vtitles.slice(1), { autoAlpha: 0, y: 40 });
+        gsap.set(caps.slice(1), { autoAlpha: 0, y: 20 });
         gsap.set(q(".made-progress"), { scaleY: 0 });
 
         const tl = gsap.timeline({
@@ -90,6 +92,8 @@ export default function MadeStory() {
             tl.to(vtitles[i - 1], { autoAlpha: 0, y: -40, duration: 0.18, ease: "power2.in" }, i);
             tl.to(scenes[i], { autoAlpha: 1, duration: 0.26, ease: "power2.out" }, i + 0.08);
             tl.to(vtitles[i], { autoAlpha: 1, y: 0, duration: 0.22, ease: "power2.out" }, i + 0.12);
+            tl.to(caps[i - 1], { autoAlpha: 0, y: -20, duration: 0.18, ease: "power2.in" }, i);
+            tl.to(caps[i], { autoAlpha: 1, y: 0, duration: 0.22, ease: "power2.out" }, i + 0.12);
           }
           // slow Ken Burns settle on each photo while its step is active
           tl.fromTo(
@@ -139,7 +143,7 @@ export default function MadeStory() {
       <div className="made-desktop relative hidden h-screen md:block">
         {/* progress rail */}
         <div
-          className="absolute left-10 top-1/2 z-10 flex -translate-y-1/2 flex-col items-center gap-4"
+          className="absolute left-10 top-1/2 z-10 hidden -translate-y-1/2 flex-col items-center gap-4 xl:flex"
           aria-hidden
         >
           <div className="relative h-56 w-[3px] overflow-hidden rounded-full bg-pista-100/15">
@@ -155,7 +159,7 @@ export default function MadeStory() {
         {/* stage */}
         <div className="flex h-full items-center justify-center gap-8 px-6">
           {/* vertical step title, reads bottom-to-top, swaps with the photo */}
-          <div className="relative hidden h-[60vh] w-16 shrink-0 lg:block" aria-hidden>
+          <div className="relative hidden h-[60vh] w-16 shrink-0 xl:block" aria-hidden>
             {steps.map((s, i) => (
               <div
                 key={s.title}
@@ -170,21 +174,39 @@ export default function MadeStory() {
               </div>
             ))}
           </div>
-          <div className="relative aspect-[3/2] max-h-[76vh] w-full max-w-[1020px]">
-            {steps.map((s) => (
-              <div
-                key={s.title}
-                className="made-scene absolute inset-0 overflow-hidden rounded-[28px] shadow-[var(--shadow-dark)]"
-              >
-                <Image
-                  src={s.image}
-                  alt={s.alt}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 1020px"
-                  className="object-cover"
-                />
-              </div>
-            ))}
+          <div className="flex w-full max-w-[1020px] flex-col">
+            <div className="relative aspect-[5/4] max-h-[62vh] w-full xl:aspect-[3/2] xl:max-h-[76vh]">
+              {steps.map((s) => (
+                <div
+                  key={s.title}
+                  className="made-scene absolute inset-0 overflow-hidden rounded-[28px] shadow-[var(--shadow-dark)]"
+                >
+                  <Image
+                    src={s.image}
+                    alt={s.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 1020px"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* tablets: step caption under the photo (large screens use the
+                vertical title instead) */}
+            <div className="relative mt-6 h-28 xl:hidden">
+              {steps.map((s, i) => (
+                <div key={s.title} className="made-cap absolute inset-0">
+                  <p className="text-[13px] font-bold tracking-[0.25em] text-kesariya-300/70">
+                    {String(i + 1).padStart(2, "0")} / 04
+                  </p>
+                  <h3 className="font-display mt-1 text-[30px] font-black leading-tight text-kesariya-500">
+                    {s.title}
+                  </h3>
+                  <p className="mt-1 text-[17px] text-pista-100/70">{s.copy}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
