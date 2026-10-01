@@ -402,3 +402,22 @@ html.lenis body {
     0.030em 0.100em 0 #842909,
     0.05em 0.16em 0.12em rgb(0 0 0 / 0.5);
 }
+
+/* Preloader self-hides if JS never runs (repeat visits: see app/layout.tsx). */
+#tdp-preloader {
+  animation: tdp-pre-fallback 0s linear 6s forwards;
+}
+@keyframes tdp-pre-fallback {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* Hero is held back until its photo loads (components/home/Hero.tsx). */
+.hero-pending .hero-bg,
+.hero-pending .hero-headline,
+.hero-pending .hero-sub,
+.hero-pending .hero-ctas,
+.hero-pending .hero-cue {
+  opacity: 0;
+}

@@ -13,21 +13,16 @@ export default function Hero() {
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
-    () => {
+    (_, contextSafe) => {
       const el = ref.current;
-      if (!el) return;
+      if (!el || !contextSafe) return;
       if (prefersReducedMotion()) {
+        el.classList.remove("hero-pending");
         gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3 });
         return;
       }
 
-      // slow cinematic settle on the photo as the page loads (ends at natural size)
-      gsap.fromTo(
-        ".hero-bg",
-        { scale: 1.08 },
-        { scale: 1, duration: 2.2, ease: "expo.out" },
-      );
-      // …and a gentle parallax drift as you scroll away (no zoom)
+      // …a gentle parallax drift as you scroll away (no zoom)
       gsap.to(".hero-bg", {
         yPercent: 8,
         ease: "none",
@@ -39,32 +34,70 @@ export default function Hero() {
         },
       });
 
-      const headline = el.querySelector(".hero-headline");
-      if (headline) {
-        const split = SplitText.create(headline, {
-          type: "lines,chars",
-          mask: "lines",
+      // the hero stays hidden (.hero-pending) until the photo has loaded, so
+      // the text never shows on a bare background and then jumps
+      const play = contextSafe(() => {
+        el.classList.remove("hero-pending");
+
+        // photo fades in with a slow cinematic settle (ends at natural size)
+        gsap.fromTo(
+          ".hero-bg",
+          { opacity: 0, scale: 1.08 },
+          { opacity: 1, scale: 1, duration: 2.2, ease: "expo.out" },
+        );
+
+        const headline = el.querySelector(".hero-headline");
+        if (headline) {
+          const split = SplitText.create(headline, {
+            type: "lines,chars",
+            mask: "lines",
+          });
+          gsap.from(split.chars, {
+            yPercent: 115,
+            rotation: 6,
+            duration: 1,
+            ease: "expo.out",
+            stagger: 0.02,
+            delay: 0.15,
+            // the line masks clip tight ascenders/descenders, so remove them
+            // (and restore the original text) once the entrance is done
+            onComplete: () => split.revert(),
+          });
+        }
+        gsap.from(".hero-sub, .hero-ctas, .hero-cue", {
+          y: 24,
+          opacity: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.12,
+          delay: 0.6,
         });
-        gsap.from(split.chars, {
-          yPercent: 115,
-          rotation: 6,
-          duration: 1,
-          ease: "expo.out",
-          stagger: 0.02,
-          delay: 0.3,
-          // the line masks clip tight ascenders/descenders, so remove them
-          // (and restore the original text) once the entrance is done
-          onComplete: () => split.revert(),
-        });
-      }
-      gsap.from(".hero-sub, .hero-ctas, .hero-cue", {
-        y: 24,
-        opacity: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        stagger: 0.12,
-        delay: 0.8,
       });
+
+      // wait for whichever photo is visible (phone or desktop copy), capped so
+      // a slow network never holds the hero back for long
+      const img = Array.from(el.querySelectorAll<HTMLImageElement>(".hero-bg img")).find(
+        (i) => i.offsetParent !== null,
+      );
+      if (!img || (img.complete && img.naturalWidth > 0)) {
+        play();
+        return;
+      }
+      let started = false;
+      const start = () => {
+        if (started) return;
+        started = true;
+        clearTimeout(timer);
+        play();
+      };
+      const timer = setTimeout(start, 1500);
+      img.addEventListener("load", start, { once: true });
+      img.addEventListener("error", start, { once: true });
+      return () => {
+        clearTimeout(timer);
+        img.removeEventListener("load", start);
+        img.removeEventListener("error", start);
+      };
     },
     { scope: ref },
   );
@@ -72,7 +105,7 @@ export default function Hero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[115svh] flex-col justify-end overflow-hidden bg-paan-900 wide:min-h-0"
+      className="hero-pending relative flex min-h-[115svh] flex-col justify-end overflow-hidden bg-paan-900 wide:min-h-0"
     >
       {/* phones: a copy of the photo rotated 90° (jar at the bottom, dark space
           at the top for the text) fills the whole hero */}

@@ -60,6 +60,20 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        {/* Runs before first paint: hides the server-rendered preloader for
+            repeat visits in this session (or reduced motion), so it never flashes.
+            A <style> tag is used (not a class on <html>) because React can reset
+            <html> attributes when it re-renders the document. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var h=true;try{h=!!sessionStorage.getItem("tdp-seen")||matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}if(h){var s=document.createElement("style");s.id="tdp-pre-hide";s.textContent="#tdp-preloader{display:none!important}";document.head.appendChild(s)}})()`,
+          }}
+        />
+        <noscript>
+          <style>{`.hero-pending .hero-bg,.hero-pending .hero-headline,.hero-pending .hero-sub,.hero-pending .hero-ctas,.hero-pending .hero-cue{opacity:1}`}</style>
+        </noscript>
+      </head>
       <body
         className={`${fraunces.variable} ${manrope.variable} ${devanagari.variable} ${caveat.variable} antialiased`}
       >

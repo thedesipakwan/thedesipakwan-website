@@ -8,20 +8,19 @@ import { MouldStamp } from "@/components/svg/MouldPattern";
  *  mould pattern, then everything wipes upward. Max ~1.6s. */
 export default function Preloader() {
   const ref = useRef<HTMLDivElement>(null);
-  const [show, setShow] = useState(false);
+  // Rendered in the server HTML so it covers the hero from the first paint;
+  // the inline script in app/layout.tsx hides it (#tdp-pre-hide) for repeat visits.
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem("tdp-seen") || prefersReducedMotion()) return;
-      sessionStorage.setItem("tdp-seen", "1");
-    } catch {
+    if (document.getElementById("tdp-pre-hide") || prefersReducedMotion()) {
+      setShow(false);
       return;
     }
-    setShow(true);
-  }, []);
+    try {
+      sessionStorage.setItem("tdp-seen", "1");
+    } catch {}
 
-  useEffect(() => {
-    if (!show) return;
     const el = ref.current;
     if (!el) return;
     document.body.style.overflow = "hidden";
@@ -49,12 +48,12 @@ export default function Preloader() {
       tl.kill();
       document.body.style.overflow = "";
     };
-  }, [show]);
+  }, []);
 
   if (!show) return null;
 
   return (
-    <div ref={ref} className="fixed inset-0 z-[100] flex items-center justify-center bg-paan-900" aria-hidden>
+    <div ref={ref} id="tdp-preloader" className="fixed inset-0 z-[100] flex items-center justify-center bg-paan-900" aria-hidden>
       {/* faint mould pattern turning behind the logo */}
       <div className="pre-mould absolute text-kesariya-500 opacity-0">
         <MouldStamp className="animate-spin-very-slow h-[min(80vw,520px)] w-[min(80vw,520px)]" />
