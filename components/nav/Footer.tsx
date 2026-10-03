@@ -17,10 +17,12 @@ export default function Footer() {
               <Image src="/images/logo-trim.webp" alt="The Desi Pakwan" fill sizes="180px" className="object-contain" />
             </span>
           </Link>
-          <p className="mt-2 max-w-sm text-[15px] text-pista-100/70">
-            Handmade thekua & chakli from a Bihari kitchen. Made fresh after you order, shipped
-            across India.
-          </p>
+          {site.business.address ? (
+            <address className="mt-2 flex max-w-sm items-start gap-2 text-[14px] not-italic text-pista-100/60">
+              <PinIcon className="mt-0.5 h-4 w-4 shrink-0 text-kesariya-500" />
+              {site.business.address}
+            </address>
+          ) : null}
           <p className="mt-4 text-[13px] text-pista-100/50">{site.fssai}</p>
 
           <p className="mb-2 mt-8 text-[14px] font-bold text-pista-100/70">
@@ -62,6 +64,15 @@ export default function Footer() {
         <p>Made with desi ghee in Bihar.</p>
       </div>
     </footer>
+  );
+}
+
+function PinIcon({ className }: { className: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+      <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </svg>
   );
 }
 

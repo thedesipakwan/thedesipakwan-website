@@ -4,7 +4,7 @@ import CheckoutClient from "./CheckoutClient";
 export const metadata = {
   ...pageMetadata(
     "Checkout",
-    "Secure checkout — pay by UPI, card or netbanking via Razorpay. Free shipping above ₹499.",
+    "Secure checkout — pay by UPI, card or netbanking via Razorpay. Free shipping across India.",
     "/checkout"
   ),
   robots: { index: false, follow: false },

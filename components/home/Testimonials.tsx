@@ -1,17 +1,6 @@
 import Marquee from "./Marquee";
+import Stars from "@/components/ui/Stars";
 import { testimonials, type Testimonial } from "@/data/testimonials";
-
-function Stars({ n }: { n: number }) {
-  return (
-    <span className="flex gap-0.5 text-kesar-400" aria-label={`${n} out of 5 stars`}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} viewBox="0 0 20 20" className={`h-4 w-4 ${i < n ? "" : "opacity-25"}`} fill="currentColor" aria-hidden>
-          <path d="M10 1.5 12.6 7l6 .6-4.5 4 1.3 5.9L10 14.4 4.6 17.5 5.9 11.6 1.4 7.6l6-.6Z" />
-        </svg>
-      ))}
-    </span>
-  );
-}
 
 function Card({ t }: { t: Testimonial }) {
   return (

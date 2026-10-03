@@ -17,7 +17,7 @@ function shelfLifeDays(skus: string[]) {
 const steps = [
   { title: "Made fresh", copy: "Your order is kneaded, pressed and fried just for you." },
   { title: "Dispatched in 2–3 working days", copy: "Packed breakage-safe, with tracking shared on email & WhatsApp." },
-  { title: "Delivered in 3–7 days", copy: "Depending on your city." },
+  { title: "Delivered in 5–7 working days", copy: "7–10 working days in rural and remote areas." },
 ];
 
 export default function CustomerConfirmation({
@@ -132,8 +132,8 @@ export default function CustomerConfirmation({
             fresh for up to {days} days, no fridge needed.
           </Text>
           <Text style={{ color: c.paan, fontSize: "13px", lineHeight: "20px", margin: "8px 0 0" }}>
-            <strong>Breakage promise:</strong> if more than 20% arrives broken, WhatsApp us a photo within
-            24 hours of delivery and we&apos;ll send a free replacement.
+            <strong>Breakage promise:</strong> if your order arrives broken or crushed, WhatsApp us photos
+            within 24 hours of delivery and we&apos;ll replace or refund the affected item.
           </Text>
         </Section>
       </Section>
@@ -174,9 +174,9 @@ export function customerConfirmationText(d: Props): string {
     d.customer.name,
     d.customer.address,
     "",
-    "What happens next: made fresh → dispatched in 2–3 working days → delivered in 3–7 days.",
+    "What happens next: made fresh → dispatched in 2–3 working days → delivered in 5–7 working days (7–10 in remote areas).",
     `Keep the jar closed; it stays fresh for up to ${shelfLifeDays(d.cart.lines.map((l) => l.sku))} days.`,
-    "Breakage promise: if more than 20% arrives broken, WhatsApp a photo within 24 hours for a free replacement.",
+    "Breakage promise: if your order arrives broken or crushed, WhatsApp photos within 24 hours of delivery and we'll replace or refund the affected item.",
     "",
     `Questions? WhatsApp us: https://wa.me/${d.supportWhatsapp} or reply to this email.`,
   ]

@@ -39,13 +39,13 @@ export const products: Product[] = [
     tagline: "The classic. Jaggery, wheat, desi ghee.",
     description:
       "The thekua every Bihari kitchen swears by. Stone-ground whole wheat, slow-melted jaggery, and desi ghee, pressed in the family mould and fried till deep gold. It's the one you break in half and share over chai.",
-    ingredients: ["Whole wheat atta", "Jaggery (gud)", "Desi cow ghee", "Fennel (saunf)", "Green cardamom"],
+    ingredients: ["Whole wheat atta", "Jaggery (gud)", "Desi ghee", "Elaichi", "Saunf", "Dry coconut", "Rice bran oil"],
     sweetness: 2,
     rating: 4.9,
-    shelfLifeDays: 40,
+    shelfLifeDays: 60,
     images: ["/images/products/prod-gud-thekua.webp", "/images/products/prod-1.webp"],
     variants: [
-      { sku: "TK-GUR-400", label: "400 g", weightGrams: 400, price: 379, inStock: true },
+      { sku: "TK-GUR-400", label: "400 g", weightGrams: 400, price: 1, inStock: true },
     ],
     badges: ["bestseller"],
     featured: true,
@@ -58,10 +58,10 @@ export const products: Product[] = [
     tagline: "Sugar-sweet, extra khasta, kids' favourite.",
     description:
       "Lighter and crisper than the gud classic, with a clean sugar sweetness. This is the one kids hide from each other. Same atta, same ghee, same mould — just a brighter crunch.",
-    ingredients: ["Whole wheat atta", "Sugar", "Desi cow ghee", "Green cardamom"],
+    ingredients: ["Whole wheat atta", "Sugar (cheeni)", "Desi ghee", "Elaichi", "Saunf", "Dry coconut", "Rice bran oil"],
     sweetness: 3,
     rating: 4.8,
-    shelfLifeDays: 40,
+    shelfLifeDays: 60,
     images: ["/images/products/prod-cheeni-thekua.webp", "/images/products/prod-1.webp"],
     variants: [
       { sku: "TK-CHN-400", label: "400 g", weightGrams: 400, price: 369, inStock: true },
@@ -73,13 +73,13 @@ export const products: Product[] = [
     name: "Chakli",
     hindiName: "चकली",
     family: "chakli",
-    tagline: "Ajwain, sesame, red chilli. The chai-time spiral.",
+    tagline: "Besan, til, red chilli. The chai-time spiral.",
     description:
-      "Crisp rice-flour spirals with ajwain and sesame in the dough and red chilli for warmth that builds without burning. One spiral is never enough.",
-    ingredients: ["Rice flour", "Ajwain", "Sesame", "Red chilli", "Turmeric", "Rock salt", "Groundnut oil"],
+      "Crisp atta-and-besan spirals with til and hing in the dough and red chilli for warmth that builds without burning. One spiral is never enough.",
+    ingredients: ["Whole wheat atta", "Besan", "Desi ghee", "Rice bran oil", "Sesame seeds (til)", "Hing", "Turmeric", "Red chilli", "Salt", "Traditional spices"],
     spice: 2,
     rating: 4.8,
-    shelfLifeDays: 30,
+    shelfLifeDays: 60,
     images: ["/images/products/prod-chakli.webp", "/images/products/chakli-1.webp"],
     variants: [
       { sku: "CH-CLA-200", label: "200 g", weightGrams: 200, price: 190, inStock: true },
@@ -94,8 +94,8 @@ export const products: Product[] = [
     family: "namkeen",
     tagline: "Flaky, salty, dangerously snackable diamonds.",
     description:
-      "Crisp diamond-cut namak pare with ajwain and a whisper of black pepper — flaky outside, khasta all the way through. The savoury one that empties before the chai cools.",
-    ingredients: ["Whole wheat atta", "Ajwain", "Black pepper", "Rock salt", "Groundnut oil"],
+      "Crisp diamond-cut namak pare with ajwain and kalonji — flaky outside, khasta all the way through. The savoury one that empties before the chai cools.",
+    ingredients: ["Whole wheat atta", "Salt", "Ajwain", "Kalonji", "Rice bran oil", "Desi ghee"],
     spice: 1,
     rating: 4.8,
     shelfLifeDays: 30,

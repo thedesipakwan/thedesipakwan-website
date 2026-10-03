@@ -84,8 +84,8 @@ export default function Ingredients() {
           <Row
             word="Ghee"
             hindi="घी"
-            lead="Desi cow ghee, and only ghee."
-            copy="The only fat that touches our kadhai. Ghee-fried thekua stays khasta for weeks without preservatives — that aroma is the ghee talking."
+            lead="Real desi ghee in every batch."
+            copy="Desi ghee goes into every dough — that aroma is the ghee talking. Paired with rice bran oil, never palm oil, so it stays khasta for weeks without preservatives."
             image="/images/feature/ghee.webp"
             alt="Golden desi cow ghee in a brass bowl"
             offset="xl:ml-0"

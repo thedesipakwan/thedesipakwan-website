@@ -72,6 +72,6 @@ export function cartTotals(lines: CartLine[]) {
     count += line.qty;
     return [{ ...line, product: match.product, variant: match.variant }];
   });
-  const shipping = subtotal > 0 ? shippingFor(subtotal) : 0;
+  const shipping = subtotal > 0 ? shippingFor() : 0;
   return { detailed, subtotal, shipping, total: subtotal + shipping, count };
 }

@@ -16,12 +16,13 @@ import { AttaIcon, FreshIcon, GheeIcon, NoPalmOilIcon, PackingIcon } from "@/com
 import { formatINR } from "@/lib/pricing";
 import { site } from "@/data/site";
 import { testimonials } from "@/data/testimonials";
+import Stars from "@/components/ui/Stars";
 
 const trustChips = ["Desi ghee", "No maida", "No palm oil", "No preservatives", "Made fresh"];
 
 const whyItems = [
-  { Icon: GheeIcon, title: "Desi cow ghee", copy: "The only fat in our kadhai. It's why the crunch lasts." },
-  { Icon: AttaIcon, title: "100% atta, no maida", copy: "Stone-ground whole wheat and rice flour, never refined." },
+  { Icon: GheeIcon, title: "Desi ghee", copy: "In every dough, with rice bran oil. Never palm oil." },
+  { Icon: AttaIcon, title: "100% atta, no maida", copy: "Whole wheat atta (plus besan in the chakli), never refined." },
   { Icon: NoPalmOilIcon, title: "No palm oil", copy: "No cheap fats, no shortcuts, nothing you can't pronounce." },
   { Icon: FreshIcon, title: "Made after you order", copy: "Nothing sits on a shelf — your batch is fried for you." },
 ];
@@ -56,9 +57,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     return () => io.disconnect();
   }, []);
 
+
   const lineTotal = variant.price * qty;
-  const toFree = Math.max(0, site.shipping.freeAbove - lineTotal);
-  const freeProgress = Math.min(1, lineTotal / site.shipping.freeAbove);
 
   const others = singleProducts().filter((p) => p.slug !== product.slug).slice(0, 3);
 
@@ -155,27 +155,16 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   />
                 </div>
 
-                {/* free-shipping nudge */}
-                <div className="mt-5">
-                  <div className="h-1.5 overflow-hidden rounded-full bg-paan-900/10">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-kesariya-500 to-mehndi-600 transition-[width] duration-500 ease-out"
-                      style={{ width: `${freeProgress * 100}%` }}
-                    />
-                  </div>
-                  <p className="mt-2 text-[13px] font-bold text-mehndi-600">
-                    {toFree > 0
-                      ? `Add ${formatINR(toFree)} more for free shipping`
-                      : "This order ships free 🎉"}
-                  </p>
-                </div>
+                <p className="mt-5 text-[13px] font-bold text-mehndi-600">
+                  Free shipping across India, on every order
+                </p>
               </div>
 
               {/* promise tiles */}
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
                 {[
                   { Icon: FreshIcon, t: "Fried fresh", s: `Dispatch in ${site.shipping.dispatchDays}` },
-                  { Icon: PackingIcon, t: "Breakage-safe", s: "Free replacement promise" },
+                  { Icon: PackingIcon, t: "Breakage-safe", s: "Replace or refund promise" },
                   { Icon: TruckIcon, t: "Pan-India", s: `Delivered in ${site.shipping.deliveryDays}` },
                 ].map(({ Icon, t, s }) => (
                   <div key={t} className="flex items-center gap-3 rounded-[20px] bg-white/60 p-4">
@@ -294,9 +283,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               key={t.name}
               className="mx-3 w-[300px] shrink-0 rounded-[24px] bg-white/70 p-6 shadow-[var(--shadow-light)]"
             >
-              <span className="text-kesar-400" aria-label={`${t.stars} out of 5 stars`}>
-                {"★".repeat(t.stars)}
-              </span>
+              <Stars n={t.stars} />
               <blockquote className="mt-2 text-[15px] leading-relaxed text-paan-900">&ldquo;{t.quote}&rdquo;</blockquote>
               <figcaption className="mt-3 text-[13px] font-bold text-paan-700/60">
                 {t.name} · {t.city}

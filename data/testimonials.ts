@@ -2,57 +2,82 @@ export interface Testimonial {
   quote: string;
   name: string;
   city: string;
-  stars: 4 | 5;
+  /** 1–5, one decimal (e.g. 4.8) */
+  stars: number;
 }
 
 // Placeholder testimonials — replace with real customer reviews before launch.
 export const testimonials: Testimonial[] = [
   {
-    quote: "Exactly like Nani's. My kids finished the jar in two days.",
-    name: "Priya S.",
+    quote: "Tasted exactly like the thekua my mother makes for Chhath. Ordering again for Diwali.",
+    name: "Sunita M.",
+    city: "Patna",
+    stars: 5,
+  },
+  {
+    quote: "Gud thekua with filter coffee sounds odd, but it works. Very fresh.",
+    name: "Rohit K.",
     city: "Bengaluru",
-    stars: 5,
+    stars: 4.8,
   },
   {
-    quote: "Ordered for Chhath from Pune. Reached in four days, not one broken.",
-    name: "Rakesh K.",
+    quote: "Chakli stayed crisp for two weeks. Not oily at all.",
+    name: "Anjali V.",
     city: "Pune",
-    stars: 5,
+    stars: 4.9,
   },
   {
-    quote: "The chakli is dangerous. Ordered twice this month.",
-    name: "Ananya M.",
+    quote: "Namak pare are perfectly salted. Wish the jar was a little bigger.",
+    name: "Saurabh J.",
     city: "Delhi",
-    stars: 5,
+    stars: 4.6,
   },
   {
-    quote: "Finally a thekua that isn't rock hard. Soft crunch, real gud.",
-    name: "Vivek T.",
-    city: "Gurugram",
-    stars: 5,
+    quote: "My kids prefer the cheeni thekua. The jar was gone in three days.",
+    name: "Pooja R.",
+    city: "Hyderabad",
+    stars: 4.7,
   },
   {
-    quote: "Sent a box to my in-laws. They called before I did.",
-    name: "Shreya R.",
+    quote: "Good taste and neat packing. Took six days to reach, but worth the wait.",
+    name: "Amit S.",
+    city: "Kolkata",
+    stars: 4.5,
+  },
+  {
+    quote: "Sent a box to my parents in Jaipur. Papa called just to ask where I got it.",
+    name: "Ritu A.",
     city: "Mumbai",
     stars: 5,
   },
   {
-    quote: "You can taste the ghee. That's the whole review.",
-    name: "Arjun P.",
-    city: "Hyderabad",
-    stars: 4,
-  },
-  {
-    quote: "Butter chakli with evening chai has become a house rule.",
-    name: "Neha D.",
+    quote: "Real desi ghee taste, not the vanaspati kind. Already placed my second order.",
+    name: "Vikram T.",
     city: "Noida",
-    stars: 5,
+    stars: 4.8,
   },
   {
-    quote: "Packing was so good the courier guy asked what's inside.",
-    name: "Imran S.",
+    quote: "Thekua was slightly harder than I like, but the flavour is spot on.",
+    name: "Kavita N.",
+    city: "Ahmedabad",
+    stars: 4.6,
+  },
+  {
+    quote: "Every piece arrived whole. The packing is really careful.",
+    name: "Manish P.",
+    city: "Gurugram",
+    stars: 4.9,
+  },
+  {
+    quote: "Chakli with evening chai is now a daily habit at home.",
+    name: "Neha G.",
     city: "Lucknow",
-    stars: 4,
+    stars: 4.7,
+  },
+  {
+    quote: "Missed this taste since leaving Bihar. A bit pricey, but genuine.",
+    name: "Rahul D.",
+    city: "Chennai",
+    stars: 4.5,
   },
 ];

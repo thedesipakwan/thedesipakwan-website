@@ -47,7 +47,7 @@ const channels = [
 const faqs = [
   {
     q: "How soon will my order ship?",
-    a: `Everything is made fresh after you order and dispatched within ${site.shipping.dispatchDays}. Delivery then takes ${site.shipping.deliveryDays} depending on your city.`,
+    a: `Everything is made fresh after you order and dispatched within ${site.shipping.dispatchDays}. Delivery then takes ${site.shipping.deliveryDays} in cities and ${site.shipping.deliveryDaysRemote} in rural and remote areas.`,
   },
   {
     q: "What if it arrives broken?",
@@ -55,7 +55,7 @@ const faqs = [
   },
   {
     q: "How long does it stay fresh?",
-    a: "Thekua stays khasta for about 40 days and chakli and namak pare for about 30 — keep the jar closed and away from direct sunlight. No preservatives, so no fridge needed.",
+    a: "Thekua and chakli stay khasta for about 60 days, and namak pare for about 30 — keep the jar closed and away from direct sunlight. No preservatives, so no fridge needed.",
   },
   {
     q: "Do you take bulk or festival orders?",
@@ -63,7 +63,7 @@ const faqs = [
   },
   {
     q: "Is shipping free?",
-    a: `Shipping is ₹${site.shipping.flat}, and free on orders above ₹${site.shipping.freeAbove}. We ship across India.`,
+    a: `Shipping is free on every order across India, with no minimum order value.`,
   },
 ];
 
@@ -136,6 +136,15 @@ export default function ContactPage() {
             </span>
             Kitchen hours: {site.hours}
           </p>
+          {site.business.address ? (
+            <address className="mt-3 flex max-w-xl items-start justify-center gap-2 text-[14px] not-italic text-pista-100/70">
+              <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0 text-kesariya-500" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+                <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" />
+                <circle cx="12" cy="9.5" r="2.5" />
+              </svg>
+              {site.business.address}
+            </address>
+          ) : null}
         </div>
       </section>
 

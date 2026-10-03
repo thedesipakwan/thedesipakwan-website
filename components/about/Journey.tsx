@@ -37,7 +37,7 @@ const steps = [
   {
     title: "Packed to survive India",
     tag: "Breakage promise",
-    copy: "Cushioned, sealed, breakage-safe. If more than 20% still arrives broken, we replace it free — photo on WhatsApp within 24 hours.",
+    copy: "Cushioned, sealed, breakage-safe. If it still arrives broken, we replace or refund it — photo on WhatsApp within 24 hours.",
     image: "/images/feature/making-4.webp",
     alt: "Fresh thekua being packed into jars",
   },

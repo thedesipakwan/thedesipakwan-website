@@ -88,7 +88,7 @@ export default async function ProductPage({
           name: "How is it shipped?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: `Made fresh after you order, dispatched within ${site.shipping.dispatchDays}, delivered in ${site.shipping.deliveryDays}. Breakage-safe packing; free shipping above ₹${site.shipping.freeAbove}.`,
+            text: `Made fresh after you order, dispatched within ${site.shipping.dispatchDays}, delivered in ${site.shipping.deliveryDays}. Breakage-safe packing; free shipping across India.`,
           },
         },
         {

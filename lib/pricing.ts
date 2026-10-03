@@ -1,5 +1,4 @@
 import { findVariant } from "@/data/products";
-import { site } from "@/data/site";
 
 export interface CartItemInput {
   sku: string;
@@ -48,7 +47,7 @@ export function priceCart(items: CartItemInput[]): PricedCart {
   });
 
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
-  const shipping = shippingFor(subtotal);
+  const shipping = shippingFor();
   return { lines, subtotal, shipping, total: subtotal + shipping };
 }
 
@@ -94,12 +93,9 @@ export function cartFromPaidItems(items: PaidItem[], shipping: number) {
   return { cart, priceChanged };
 }
 
-export function shippingFor(subtotal: number): number {
-  return subtotal >= site.shipping.freeAbove ? 0 : site.shipping.flat;
-}
-
-export function amountToFreeShipping(subtotal: number): number {
-  return Math.max(0, site.shipping.freeAbove - subtotal);
+/** Shipping is free on every order, with no minimum. */
+export function shippingFor(): number {
+  return 0;
 }
 
 export function formatINR(amount: number): string {
