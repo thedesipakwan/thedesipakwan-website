@@ -116,6 +116,14 @@ export default function SuccessClient() {
     };
   }, [orderId, clear]);
 
+  // Always start at the top. On phones the visitor arrives scrolled far down
+  // (the Pay button sits low on a long checkout form), and the short
+  // "Confirming…" screen keeps them near its bottom — so when the full page
+  // appears they'd land mid-page and miss the seal animation.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [status]);
+
   // Draw the chakli seal, stamp the tick, burst the ghee drops, then reveal
   // the page piece by piece (paid state only).
   useEffect(() => {
@@ -322,8 +330,8 @@ export default function SuccessClient() {
         </div>
 
         {/* ---- receipt + what happens next ---- */}
-        <div className="mt-14 grid items-start gap-8 md:mt-20 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
-          {/* kitchen chit */}
+        <div className="mt-14 grid grid-cols-[minmax(0,1fr)] items-start gap-8 md:mt-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-10">
+          {/* order receipt */}
           <div
             data-reveal
             style={{ opacity: 0 }}
@@ -332,18 +340,18 @@ export default function SuccessClient() {
             {/* rubber "paid" stamp */}
             <span
               aria-hidden
-              className="font-display absolute right-5 top-6 rotate-[-14deg] rounded-xl border-[3px] border-sindoor-600/80 px-3 py-0.5 text-[22px] font-black uppercase tracking-[0.12em] text-sindoor-600/80 md:right-7"
+              className="font-display absolute right-4 top-6 rotate-[-14deg] rounded-xl border-[3px] border-sindoor-600/80 px-2.5 py-0.5 text-[17px] font-black uppercase tracking-[0.12em] text-sindoor-600/80 sm:right-5 sm:px-3 sm:text-[22px] md:right-7"
             >
               Paid
             </span>
 
             <div className="px-6 pb-6 pt-7 md:px-8">
-              <div className="pr-24">
+              <div className="pr-20 sm:pr-24">
                 <p className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.2em] text-paan-700/60">
                   <MouldStamp className="h-5 w-5 text-sindoor-600" />
-                  Kitchen chit
+                  Order receipt
                 </p>
-                <p className="font-display mt-2 whitespace-nowrap text-[22px] font-black leading-tight sm:text-[26px]">{site.name}</p>
+                <p className="font-display mt-2 text-[22px] font-black leading-tight sm:text-[26px]">{site.name}</p>
               </div>
 
               <div className="mt-5">
