@@ -44,7 +44,9 @@ export function EmailLayout({
     <Html lang="en">
       <Head />
       <Preview>{preview}</Preview>
-      <Body style={{ backgroundColor: c.pista, fontFamily: font, margin: 0, padding: "24px 0" }}>
+      {/* no page background: Gmail paints it as a sharp-cornered box behind
+          the rounded card (very visible in dark mode) */}
+      <Body style={{ fontFamily: font, margin: 0, padding: "12px 0" }}>
         <Container style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: c.white, borderRadius: "20px", overflow: "hidden", border: `1px solid ${c.pistaDeep}` }}>
           {/* header */}
           <Section style={{ backgroundColor: c.cream, padding: "22px 32px", textAlign: "center", borderBottom: `4px solid ${c.kesariya}` }}>
