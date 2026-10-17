@@ -48,7 +48,7 @@ export function verifyWebhookSignature(rawBody: string, signature: string): bool
 
 /**
  * Serializes cart items with the unit price charged, e.g.
- * "TK-GUR-400x2@379|CH-CLA-200x1@190", so the webhook knows exactly what
+ * "TK-GUR-400x2@379|CH-CLA-200x1@239", so the webhook knows exactly what
  * the customer paid for even if prices change later.
  */
 export function itemsToNotes(items: { sku: string; qty: number; price: number }[]): string {

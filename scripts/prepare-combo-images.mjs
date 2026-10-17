@@ -3,7 +3,8 @@
  * photos are padded (not cropped) to a square in their own background
  * colour, and every image gets a small margin so jars clear the cards'
  * rounded corners. Output: public/images/products/combo-<name>.webp
- * Run: node scripts/prepare-combo-images.mjs
+ * Run: node scripts/prepare-combo-images.mjs            (all)
+ *      node scripts/prepare-combo-images.mjs <name> ...  (just these)
  */
 import sharp from "sharp";
 
@@ -16,13 +17,27 @@ const names = [
   "namakpare-cheeni",
   "namakpare-chakli",
   "namakpare-chakli-gud-cheeni",
+  "namakpare-chakli-gud",
+  "cheeni-chakli-gud",
+  "namakpare-chakli-cheeni",
 ];
+const only = process.argv.slice(2);
+
+// Photos on a gradient studio backdrop: padding with the corner colour would
+// leave a visible frame, and they're already square with room around the
+// jars, so these are only resized.
+const RESIZE_ONLY = new Set(["namakpare-chakli-gud"]);
 
 const OUT = 1200;
 const MARGIN = 0.06; // of the final side, each edge
 
-for (const name of names) {
+for (const name of only.length ? only : names) {
   const src = `${dir}${name}.png`;
+  if (RESIZE_ONLY.has(name)) {
+    const r = await sharp(src).resize(OUT, OUT, { fit: "cover" }).webp({ quality: 84 }).toFile(`${dir}combo-${name}.webp`);
+    console.log(`${name}: resized -> combo-${name}.webp ${OUT}x${OUT} (${Math.round(r.size / 1024)} KB)`);
+    continue;
+  }
   const img = sharp(src);
   const { width, height } = await img.metadata();
 

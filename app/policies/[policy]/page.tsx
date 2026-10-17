@@ -222,6 +222,7 @@ const policies: Record<string, Policy> = {
         heading: "Cookies and browser storage",
         body: [
           "Our website saves your cart in your own browser so it isn't lost if you refresh the page. We may also use basic analytics to understand how visitors use the site, so we can improve it. We don't use advertising or tracking cookies.",
+          "If you choose, we save your name, contact and delivery details in a secure cookie in your own browser so checkout is faster next time. We don't store them anywhere else, and you can clear them anytime from the checkout page.",
         ],
       },
       {

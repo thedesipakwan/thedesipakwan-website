@@ -107,14 +107,16 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   <div>
                     {variant.compareAt ? (
                       <span className="mb-2 inline-block rounded-full bg-mehndi-600 px-3 py-1 text-[12px] font-bold text-white">
-                        Combo saving · {formatINR((variant.compareAt - variant.price) * qty)}
+                        {product.family === "combo" ? "Combo saving" : "You save"} ·{" "}
+                        {formatINR((variant.compareAt - variant.price) * qty)}
                       </span>
                     ) : null}
                     <p key={`${variant.sku}-${qty}`} className="animate-price-roll font-display text-[44px] font-black leading-none text-paan-900 tabular-nums">
                       {formatINR(lineTotal)}
                       {variant.compareAt ? (
-                        <span className="ml-3 font-sans text-[20px] font-bold text-paan-700/40 line-through">
-                          {formatINR(variant.compareAt * qty)}
+                        <span className="ml-3 font-sans text-[20px] font-bold text-paan-700/40">
+                          <span className="mr-1 text-[15px]">MRP</span>
+                          <span className="line-through">{formatINR(variant.compareAt * qty)}</span>
                         </span>
                       ) : null}
                     </p>
@@ -126,7 +128,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   {product.variants.length > 1 ? (
                     <VariantPicker variants={product.variants} selected={variant} onSelect={setVariant} />
                   ) : (
-                    <span className="rounded-full bg-paan-900 px-5 py-2.5 text-[15px] font-bold text-kesariya-500">
+                    <span className="rounded-full bg-kesariya-500/15 px-5 py-2.5 text-[15px] font-bold text-sindoor-600">
                       {variant.label}
                     </span>
                   )}

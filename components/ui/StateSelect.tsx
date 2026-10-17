@@ -2,9 +2,15 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
+/** "Andaman and Nicobar Islands" and "Andaman & Nicobar" compare equal. */
+const normalize = (s: string) =>
+  s.toLowerCase().replace(/\band\b/g, "&").replace(/\bislands?\b/g, "").replace(/\s+/g, " ").trim();
+
 /**
  * Theme-styled, searchable replacement for a native <select> (whose option
  * list can't be coloured). Type to filter, arrows to move, Enter to pick.
+ * Text that exactly names an option (typed, pasted or browser-autofilled) is
+ * picked straight away.
  */
 export default function StateSelect({
   label,
@@ -13,6 +19,8 @@ export default function StateSelect({
   onChange,
   onBlur,
   error,
+  name,
+  autoComplete = "off",
 }: {
   label: string;
   options: string[];
@@ -20,6 +28,8 @@ export default function StateSelect({
   onChange: (v: string) => void;
   onBlur?: () => void;
   error?: string;
+  name?: string;
+  autoComplete?: string;
 }) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -87,7 +97,8 @@ export default function StateSelect({
           aria-controls={`${id}-list`}
           aria-autocomplete="list"
           aria-invalid={!!error}
-          autoComplete="off"
+          name={name}
+          autoComplete={autoComplete}
           value={open ? query : value}
           placeholder={value || "Select…"}
           onFocus={() => {
@@ -96,6 +107,11 @@ export default function StateSelect({
             setActive(Math.max(0, options.indexOf(value)));
           }}
           onChange={(e) => {
+            const exact = options.find((o) => normalize(o) === normalize(e.target.value));
+            if (exact) {
+              pick(exact);
+              return;
+            }
             setQuery(e.target.value);
             setActive(0);
             setOpen(true);

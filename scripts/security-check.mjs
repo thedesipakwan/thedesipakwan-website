@@ -8,7 +8,7 @@ import crypto from "node:crypto";
 import { readFileSync } from "node:fs";
 import Razorpay from "razorpay";
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.BASE ?? "http://localhost:3000";
 const env = Object.fromEntries(
   readFileSync(".env.local", "utf8")
     .split(/\r?\n/)
@@ -64,8 +64,8 @@ check("valid order created", r.status === 200 && !!created.orderId, created.orde
 const rp = new Razorpay({ key_id: env.NEXT_PUBLIC_RAZORPAY_KEY_ID, key_secret: env.RAZORPAY_KEY_SECRET });
 if (created.orderId) {
   const o = await rp.orders.fetch(created.orderId);
-  check("duplicate SKUs merged + unit prices recorded", o.notes.items === "TK-GUR-400x3@379|CH-CLA-200x1@190", o.notes.items);
-  check("amount = server price (3×379 + 190, free shipping)", Number(o.amount) === (3 * 379 + 190) * 100, String(o.amount));
+  check("duplicate SKUs merged + unit prices recorded", o.notes.items === "TK-GUR-400x3@379|CH-CLA-200x1@239", o.notes.items);
+  check("amount = server price (3×379 + 239, free shipping)", Number(o.amount) === (3 * 379 + 239) * 100, String(o.amount));
   check("city stored separately", o.notes.city === "Patna");
 }
 

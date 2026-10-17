@@ -5,7 +5,7 @@ export interface Variant {
   label: string; // "500 g"
   weightGrams: number;
   price: number; // INR, integer, inclusive of GST
-  compareAt?: number; // optional strike-through, use honestly
+  compareAt?: number; // optional strike-through, use honestly (single products: the MRP)
   inStock: boolean;
 }
 
@@ -45,7 +45,7 @@ export const products: Product[] = [
     shelfLifeDays: 60,
     images: ["/images/products/prod-gud-thekua.webp", "/images/products/prod-1.webp"],
     variants: [
-      { sku: "TK-GUR-400", label: "400 g", weightGrams: 400, price: 1, inStock: true },
+      { sku: "TK-GUR-400", label: "400 g", weightGrams: 400, price: 379, compareAt: 470, inStock: true },
     ],
     badges: ["bestseller"],
     featured: true,
@@ -64,7 +64,7 @@ export const products: Product[] = [
     shelfLifeDays: 60,
     images: ["/images/products/prod-cheeni-thekua.webp", "/images/products/prod-1.webp"],
     variants: [
-      { sku: "TK-CHN-400", label: "400 g", weightGrams: 400, price: 369, inStock: true },
+      { sku: "TK-CHN-400", label: "400 g", weightGrams: 400, price: 369, compareAt: 450, inStock: true },
     ],
     featured: true,
   },
@@ -82,7 +82,8 @@ export const products: Product[] = [
     shelfLifeDays: 60,
     images: ["/images/products/prod-chakli.webp", "/images/products/chakli-1.webp"],
     variants: [
-      { sku: "CH-CLA-200", label: "200 g", weightGrams: 200, price: 190, inStock: true },
+      // SKU keeps the old "200" so saved carts keep working; the jar is now 250 g
+      { sku: "CH-CLA-200", label: "250 g", weightGrams: 250, price: 239, compareAt: 290, inStock: true },
     ],
     badges: ["bestseller"],
     featured: true,
@@ -101,7 +102,7 @@ export const products: Product[] = [
     shelfLifeDays: 30,
     images: ["/images/products/prod-namakpare.webp", "/images/products/namak-pare-1.webp"],
     variants: [
-      { sku: "NP-CLA-400", label: "400 g", weightGrams: 400, price: 299, inStock: true },
+      { sku: "NP-CLA-400", label: "400 g", weightGrams: 400, price: 299, compareAt: 440, inStock: true },
     ],
     badges: ["new"],
     featured: true,
@@ -109,8 +110,9 @@ export const products: Product[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Combos — priced from their parts, so they follow single-product    */
-/*  price changes. compareAt is the real "bought separately" total.    */
+/*  Combos — priced from their parts (so they follow single-product    */
+/*  price changes) unless given a fixed price. compareAt is the combo's */
+/*  MRP: the one set here, else its jars' MRPs added up.                */
 /* ------------------------------------------------------------------ */
 
 
@@ -122,7 +124,7 @@ function comboPrice(total: number, discount: number) {
 }
 
 function comboLabel(jars: number, grams: number) {
-  const weight = grams >= 1000 ? `${(grams / 1000).toLocaleString("en-IN", { maximumFractionDigits: 1 })} kg` : `${grams} g`;
+  const weight = grams >= 1000 ? `${(grams / 1000).toLocaleString("en-IN", { maximumFractionDigits: 2 })} kg` : `${grams} g`;
   return `${jars} jars · ${weight}`;
 }
 
@@ -136,7 +138,12 @@ function makeCombo(def: {
   tagline: string;
   description: string;
   rating: number;
-  discount: number;
+  /** Fraction off the parts' total (ignored when `price` is set). */
+  discount?: number;
+  /** Fixed combo price in ₹ — the owner's set price instead of the formula. */
+  price?: number;
+  /** The combo's MRP in ₹, shown struck through (default: its jars' MRPs added up). */
+  mrp?: number;
   badges?: Product["badges"];
 }): Product {
   const parts = def.parts.map((slug) => {
@@ -145,6 +152,8 @@ function makeCombo(def: {
     return { product: p, variant: p.variants[0] };
   });
   const separate = parts.reduce((sum, x) => sum + x.variant.price, 0);
+  const price = def.price ?? comboPrice(separate, def.discount ?? 0);
+  const mrp = def.mrp ?? parts.reduce((sum, x) => sum + (x.variant.compareAt ?? x.variant.price), 0);
   return {
     slug: def.slug,
     name: def.name,
@@ -161,8 +170,8 @@ function makeCombo(def: {
         sku: def.sku,
         label: comboLabel(parts.length, parts.reduce((sum, x) => sum + x.variant.weightGrams, 0)),
         weightGrams: parts.reduce((sum, x) => sum + x.variant.weightGrams, 0),
-        price: comboPrice(separate, def.discount),
-        compareAt: separate,
+        price,
+        compareAt: mrp > price ? mrp : undefined,
         inStock: true,
       },
     ],
@@ -250,6 +259,48 @@ const combos: Product[] = [
     discount: 0.05,
   }),
   makeCombo({
+    slug: "namak-pare-chakli-gud-thekua-combo",
+    sku: "CO-NP-CLA-GUD",
+    image: "/images/products/combo-namakpare-chakli-gud.webp",
+    name: "Namak Pare + Chakli + Gud Thekua",
+    hindiName: "नमक पारे + चकली + गुड़ ठेकुआ",
+    parts: ["namak-pare", "chakli", "gud-thekua"],
+    tagline: "Two namkeens and the gud classic. Every craving covered.",
+    description:
+      "Flaky namak pare, masala chakli and our bestselling gud thekua — salty, spicy and sweet in one order. Three jars that keep the whole house happy from breakfast to the evening chai.",
+    rating: 4.9,
+    price: 859,
+    mrp: 1200,
+  }),
+  makeCombo({
+    slug: "cheeni-thekua-chakli-gud-thekua-combo",
+    sku: "CO-CHN-CLA-GUD",
+    image: "/images/products/combo-cheeni-chakli-gud.webp",
+    name: "Cheeni Thekua + Chakli + Gud Thekua",
+    hindiName: "चीनी ठेकुआ + चकली + गुड़ ठेकुआ",
+    parts: ["cheeni-thekua", "chakli", "gud-thekua"],
+    tagline: "Both thekuas, with a spicy chakli in between.",
+    description:
+      "Gud thekua and cheeni thekua for the sweet-tooth debate, plus a jar of masala chakli for the crunch. The thekua lover's box, with something savoury to go with the chai.",
+    rating: 4.9,
+    price: 899,
+    mrp: 1210,
+  }),
+  makeCombo({
+    slug: "namak-pare-chakli-cheeni-thekua-combo",
+    sku: "CO-NP-CLA-CHN",
+    image: "/images/products/combo-namakpare-chakli-cheeni.webp",
+    name: "Namak Pare + Chakli + Cheeni Thekua",
+    hindiName: "नमक पारे + चकली + चीनी ठेकुआ",
+    parts: ["namak-pare", "chakli", "cheeni-thekua"],
+    tagline: "Salty, spicy, and the kids' favourite sweet.",
+    description:
+      "Crisp namak pare, masala chakli and the lighter, sugar-sweet cheeni thekua. A sweet-and-savoury trio for guests, tiffins and long train journeys.",
+    rating: 4.8,
+    price: 849,
+    mrp: 1180,
+  }),
+  makeCombo({
     slug: "complete-desi-pakwan-box",
     sku: "CO-ALL-4",
     image: "/images/products/combo-namakpare-chakli-gud-cheeni.webp",
@@ -260,7 +311,8 @@ const combos: Product[] = [
     description:
       "Gud thekua, cheeni thekua, chakli and namak pare — the whole Desi Pakwan kitchen in one order. Made for gifting, festivals, and anyone who can't choose.",
     rating: 4.9,
-    discount: 0.1,
+    price: 1159,
+    mrp: 1650,
     badges: ["gifting"],
   }),
 ];

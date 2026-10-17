@@ -109,6 +109,10 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         ) : (
           <div className="mt-1.5 flex flex-wrap gap-1">
+            {/* weight — saffron, so it stands apart from the green ingredient tags */}
+            <span className="whitespace-nowrap rounded-full bg-kesariya-500/15 px-2.5 py-0.5 text-[11px] font-bold text-sindoor-600">
+              {first.label}
+            </span>
             {["Desi ghee", "No maida", "No palm oil", "No preservatives", "Made fresh"].map((t) => (
               <span
                 key={t}
@@ -135,12 +139,7 @@ export default function ProductCard({ product }: { product: Product }) {
             ) : product.variants.length > 1 ? (
               `from ${formatINR(fromPrice)}`
             ) : (
-              <>
-                {formatINR(fromPrice)}
-                <span className="ml-1.5 text-[13px] font-medium text-paan-700/60">
-                  · {first.label}
-                </span>
-              </>
+              formatINR(fromPrice)
             )}
           </p>
           <AddToCart

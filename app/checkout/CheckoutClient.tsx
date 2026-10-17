@@ -5,7 +5,7 @@ import Script from "next/script";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCart, cartTotals } from "@/lib/cart";
@@ -16,8 +16,7 @@ import { Input, Textarea } from "@/components/ui/Input";
 import StateSelect from "@/components/ui/StateSelect";
 import CartSummary from "@/components/cart/CartSummary";
 import ChakliSpiral from "@/components/svg/ChakliSpiral";
-
-
+import type { SavedDetails } from "@/lib/checkoutDetails";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Tell us your name").max(80),
@@ -32,6 +31,51 @@ const schema = z.object({
 });
 
 type FormValues = z.infer<typeof schema>;
+
+const EMPTY_FORM: FormValues = { name: "", phone: "", email: "", line1: "", line2: "", city: "", state: "", pin: "", note: "" };
+
+/** Autofill may give "+91 98765 43210" or "098765 43210" — keep the 10-digit mobile. */
+function normalizePhone(raw: string): string {
+  const digits = String(raw ?? "").replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) return digits.slice(2);
+  if (digits.length === 11 && digits.startsWith("0")) return digits.slice(1);
+  return digits;
+}
+
+/**
+ * Saves (values) or forgets (null) the customer's details for next checkout.
+ * Never throws and gives up after 3 s, so it can't hold up the redirect.
+ */
+async function rememberDetails(values: FormValues | null) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 3000);
+  try {
+    if (values) {
+      const details: SavedDetails = {
+        name: values.name,
+        phone: values.phone,
+        email: values.email,
+        address1: values.line1,
+        address2: values.line2 || "",
+        city: values.city,
+        state: values.state,
+        pin: values.pin,
+      };
+      await fetch("/api/checkout-details", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(details),
+        signal: ctrl.signal,
+      });
+    } else {
+      await fetch("/api/checkout-details", { method: "DELETE", signal: ctrl.signal });
+    }
+  } catch {
+    /* saving is a convenience — never block the order */
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 interface RazorpayResponse {
   razorpay_order_id: string;
@@ -54,6 +98,9 @@ export default function CheckoutClient() {
   const [mounted, setMounted] = useState(false);
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
+  const [saveDetails, setSaveDetails] = useState(false);
+  /** First name of a returning customer whose saved details were filled in. */
+  const [welcomeName, setWelcomeName] = useState<string | null>(null);
 
   useEffect(() => setMounted(true), []);
   const { detailed, subtotal, shipping, total } = cartTotals(mounted ? lines : []);
@@ -62,11 +109,58 @@ export default function CheckoutClient() {
     register,
     control,
     handleSubmit,
+    reset,
+    getValues,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { state: "" },
+    defaultValues: EMPTY_FORM,
   });
+  const [addrName, addr1, addr2, addrCity, addrState, addrPin] = useWatch({
+    control,
+    name: ["name", "line1", "line2", "city", "state", "pin"],
+  });
+
+  // Returning customer: fill in the details they chose to save last time.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/checkout-details", { cache: "no-store" });
+        if (!res.ok) return;
+        const saved: Partial<SavedDetails> = await res.json();
+        if (cancelled || !saved.name || !saved.phone) return;
+        // don't overwrite anything the customer has already started typing
+        if (Object.values(getValues()).some((v) => typeof v === "string" && v.trim())) return;
+        reset({
+          ...EMPTY_FORM,
+          name: saved.name,
+          phone: saved.phone,
+          email: saved.email ?? "",
+          line1: saved.address1 ?? "",
+          line2: saved.address2 ?? "",
+          city: saved.city ?? "",
+          state: saved.state ?? "",
+          pin: saved.pin ?? "",
+        });
+        setWelcomeName(saved.name.split(/\s+/)[0]);
+        // they opted in last time — keep saving unless they untick it
+        setSaveDetails(true);
+      } catch {
+        /* no saved details — plain empty form */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [getValues, reset]);
+
+  const clearSavedDetails = () => {
+    setWelcomeName(null);
+    setSaveDetails(false);
+    reset(EMPTY_FORM);
+    void rememberDetails(null);
+  };
 
   const onSubmit = async (values: FormValues) => {
     setPayError(null);
@@ -124,6 +218,7 @@ export default function CheckoutClient() {
             });
             const verify = await verifyRes.json();
             if (!verify.valid) throw new Error("verify failed");
+            await rememberDetails(saveDetails ? values : null);
             router.push(`/order/success?order=${encodeURIComponent(resp.razorpay_order_id)}`);
           } catch {
             setPaying(false);
@@ -193,6 +288,21 @@ export default function CheckoutClient() {
 
         <div className="mt-10 grid items-start gap-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
+            {welcomeName ? (
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-2xl border border-mehndi-600/20 bg-mehndi-600/10 px-5 py-3.5 text-[15px] text-paan-900">
+                <p>
+                  <span className="font-bold">Welcome back, {welcomeName}!</span> We&apos;ve filled in your details.
+                </p>
+                <button
+                  type="button"
+                  onClick={clearSavedDetails}
+                  className="font-bold text-sindoor-600 underline-offset-4 hover:underline"
+                >
+                  Not you? Clear details
+                </button>
+              </div>
+            ) : null}
+
             {/* 1 · contact */}
             <fieldset className="rounded-[28px] border border-pista-200 bg-white/75 p-6 shadow-[0_16px_40px_rgba(6,28,19,0.06)] md:p-7">
               <legend className="sr-only">Contact details</legend>
@@ -206,11 +316,10 @@ export default function CheckoutClient() {
                   label="Phone"
                   type="tel"
                   inputMode="numeric"
-                  maxLength={10}
-                  autoComplete="tel-national"
+                  autoComplete="tel"
                   hint="10 digits, for delivery updates"
                   error={errors.phone?.message}
-                  {...register("phone")}
+                  {...register("phone", { setValueAs: normalizePhone })}
                 />
               </div>
               <Input
@@ -231,6 +340,17 @@ export default function CheckoutClient() {
                 <span className="font-display flex h-9 w-9 items-center justify-center rounded-full bg-kesariya-500 text-[16px] font-black text-paan-900">2</span>
                 <h2 className="font-display text-[22px] font-black text-paan-900">Delivery address</h2>
               </div>
+              {welcomeName ? (
+                <div className="mb-5 rounded-2xl border-2 border-dashed border-kesariya-500/50 bg-kesariya-500/[0.06] px-5 py-4">
+                  <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-paan-700/60">Delivering to</p>
+                  <p className="mt-1.5 text-[16px] font-bold text-paan-900">{addrName}</p>
+                  <p className="text-[15px] leading-relaxed text-paan-900">
+                    {[addr1, addr2, addrCity, addrState].filter(Boolean).join(", ")}
+                    {addrPin ? ` – ${addrPin}` : ""}
+                  </p>
+                  <p className="mt-1 text-[13px] text-paan-700/60">Not right? Change it in the fields below before you pay.</p>
+                </div>
+              ) : null}
               <div className="space-y-5">
                 <Input label="Address line 1" placeholder="House no., building, street" autoComplete="address-line1" error={errors.line1?.message} {...register("line1")} />
                 <Input label="Address line 2 (optional)" placeholder="Area, landmark" autoComplete="address-line2" error={errors.line2?.message} {...register("line2")} />
@@ -242,6 +362,8 @@ export default function CheckoutClient() {
                     render={({ field }) => (
                       <StateSelect
                         label="State"
+                        name="state"
+                        autoComplete="address-level1"
                         options={INDIAN_STATES}
                         value={field.value}
                         onChange={field.onChange}
@@ -252,6 +374,7 @@ export default function CheckoutClient() {
                   />
                   <Input
                     label="PIN code"
+                    type="tel"
                     inputMode="numeric"
                     maxLength={6}
                     autoComplete="postal-code"
@@ -267,6 +390,21 @@ export default function CheckoutClient() {
                 />
               </div>
             </fieldset>
+
+            <label className="flex cursor-pointer items-start gap-3 px-1">
+              <input
+                type="checkbox"
+                checked={saveDetails}
+                onChange={(e) => setSaveDetails(e.target.checked)}
+                className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-sindoor-600"
+              />
+              <span className="text-[15px] font-bold text-paan-900">
+                Save my details for faster checkout next time
+                <span className="mt-0.5 block text-[13px] font-normal text-paan-700/60">
+                  Name, contact and address only, in a secure cookie in this browser. Never payment details.
+                </span>
+              </span>
+            </label>
 
             {payError ? (
               <div role="alert" className="rounded-2xl border-2 border-sindoor-600/30 bg-sindoor-600/10 px-5 py-4 text-[15px] font-medium text-sindoor-600">
