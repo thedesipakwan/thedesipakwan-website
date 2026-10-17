@@ -5,11 +5,11 @@ export const founder = {
   role: "Founder, The Desi Pakwan",
   photo: "/images/founder.webp",
   photoAlt: "The founder of The Desi Pakwan in the family kitchen",
-  headline: "I grew up waiting for Chhath — mostly for the thekua.",
+  headline: "One recipe from my maa. One from my saasu maa.",
   story: [
-    "Every year, the whole house would gather around one wooden mould. My nani pressed, my maa fried, and I was allowed to steal exactly one thekua before it cooled. That smell of gud and ghee is the oldest memory I have.",
-    "When I moved away from Bihar, I couldn't find anything that tasted like that kitchen. Everything on the shelves was maida, palm oil, and months old. So I went home, learnt the recipe properly, and started making it for friends.",
-    "The Desi Pakwan is that same kitchen, just with a courier at the door. We still use the family mould, we still fry in desi ghee, and nothing is made until you order it.",
+    "I grew up in Bihar, where Chhath meant thekua. My maa pressed the dough into a wooden saancha, the whole house smelled of gud and ghee, and I was allowed exactly one before it cooled. I always took two. Chakli was rarer — a treat I'd make last one ring at a time.",
+    "After my wedding, I found it at home. My saasu maa's family is Bihari too, but had lived outside Bihar for decades, and she had made chakli her own. My first Diwali, she put the press in my hand and stood beside me until I got it right.",
+    "Today our kitchen is in Greater Noida, but both recipes came with us. The thekua is my maa's, the chakli is Mummy ji's, made with desi ghee and only after you order. I hope it tastes like home. To me, it tastes like both of mine.",
   ],
-  quote: "If Nani wouldn't serve it, we don't ship it.",
+  quote: "If Maa and Mummy ji wouldn't serve it, we don't ship it.",
 };

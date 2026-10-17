@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { site, waLink } from "@/data/site";
+import { waLink } from "@/data/site";
 
 export default function MobileMenu({ links }: { links: { href: string; label: string }[] }) {
   const [open, setOpen] = useState(false);
@@ -61,7 +61,6 @@ export default function MobileMenu({ links }: { links: { href: string; label: st
         >
           WhatsApp us
         </a>
-        <p className="mt-4 text-[13px] text-pista-100/50">{site.hours}</p>
       </div>
     </div>
   );

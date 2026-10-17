@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import AnnouncementBar from "./AnnouncementBar";
 import CartButton from "./CartButton";
 import MobileMenu from "./MobileMenu";
 import ChakliSpiral from "@/components/svg/ChakliSpiral";
@@ -44,6 +45,7 @@ export default function Navbar() {
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
+      <AnnouncementBar />
       <nav
         className={`transition-colors duration-300 ${
           scrolled || !overHero

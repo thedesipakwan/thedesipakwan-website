@@ -26,7 +26,7 @@ export default function AboutHero() {
           as="h1"
           className="font-display mt-7 text-[clamp(42px,6.5vw,84px)] font-black leading-[1.0] text-kesariya-500"
         >
-          From a kitchen in Bihar to your doorstep
+          Bihar&apos;s recipes, passed down to your doorstep
         </SplitTextReveal>
 
         <SplitTextReveal
@@ -34,7 +34,7 @@ export default function AboutHero() {
           className="mt-7 max-w-[60ch] text-[18px] leading-[1.65] text-pista-100/80"
           delay={0.15}
         >
-          The Desi Pakwan started in a kitchen in Bihar, with a mould that&apos;s older than the
+          The Desi Pakwan started with recipes handed down in a family kitchen in Bihar, and a mould that&apos;s older than the
           founder. We make thekua the way it was always made — atta, gud, ghee, patience — and chakli
           that doesn&apos;t taste like a factory. Every pack is made after you order and shipped
           within three days.

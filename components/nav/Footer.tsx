@@ -61,7 +61,6 @@ export default function Footer() {
 
       <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-2 px-6 pb-6 pt-4 text-[13px] text-pista-100/50">
         <p>© {new Date().getFullYear()} The Desi Pakwan. Ghar ka khasta, ghar tak.</p>
-        <p>Made with desi ghee in Bihar.</p>
       </div>
     </footer>
   );
