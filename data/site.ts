@@ -19,7 +19,7 @@ export const site = {
   publicUrl: "https://thedesipakwan.com",
   email: "info@thedesipakwan.com",
   // Set NEXT_PUBLIC_WHATSAPP in .env.local (e.g. 919876543210).
-  whatsapp: normalizeIndianWhatsapp(process.env.NEXT_PUBLIC_WHATSAPP) || "919999999999",
+  whatsapp: normalizeIndianWhatsapp(process.env.NEXT_PUBLIC_WHATSAPP) || "917303181599",
   instagram: "https://instagram.com/thedesipakwan",
   fssaiNumber,
   fssai: fssaiNumber ? `FSSAI Reg. No. ${fssaiNumber}` : "FSSAI Reg. No. (to be updated)",

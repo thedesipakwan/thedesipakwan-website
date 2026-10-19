@@ -3,8 +3,8 @@
 export const founder = {
   name: "Mamta Sinha",
   role: "Founder, The Desi Pakwan",
-  photo: "/images/founder.webp",
-  photoAlt: "The founder of The Desi Pakwan in the family kitchen",
+  photo: "/images/founder/mamta-sinha.webp",
+  photoAlt: "Mamta Sinha, founder of The Desi Pakwan, at her stall with jars of her snacks",
   headline: "One recipe from my maa. One from my saasu maa.",
   story: [
     "I grew up in Bihar, where Chhath meant thekua. My maa pressed the dough into a wooden saancha, the whole house smelled of gud and ghee, and I was allowed exactly one before it cooled. I always took two. Chakli was rarer — a treat I'd make last one ring at a time.",
