@@ -204,7 +204,7 @@ const combos: Product[] = [
     description:
       "Gud thekua for the sweet tooth, masala chakli for the crunch. One jar of each, and the 4 PM chai plate is sorted for the week.",
     rating: 4.9,
-    discount: 0.05,
+    price: 599,
   }),
   makeCombo({
     slug: "cheeni-thekua-chakli-combo",
@@ -217,7 +217,7 @@ const combos: Product[] = [
     description:
       "Crisp cheeni thekua and ajwain-sesame chakli — a sweet-and-savoury pair that disappears from the dabba faster than you can refill it.",
     rating: 4.8,
-    discount: 0.05,
+    price: 589,
   }),
   makeCombo({
     slug: "gud-thekua-namak-pare-combo",
@@ -256,7 +256,7 @@ const combos: Product[] = [
     description:
       "Masala chakli spirals and crisp namak pare — two savoury favourites for the people who skip the mithai and head straight for the crunch.",
     rating: 4.8,
-    discount: 0.05,
+    price: 519,
   }),
   makeCombo({
     slug: "namak-pare-chakli-gud-thekua-combo",
